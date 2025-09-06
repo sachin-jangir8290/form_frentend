@@ -10,7 +10,7 @@ const GBPFormModal = ({ isOpen, onClose }) => {
   useEffect(() => {
     if (isOpen) {
       // Send notification when form is opened
-      fetch("http://localhost:5000/api/form-open", {
+      fetch("https://form-backend-mu.vercel.app/api/form-open", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -54,7 +54,7 @@ const GBPFormModal = ({ isOpen, onClose }) => {
     const formDataObj = new FormData(form);
 
     try {
-      const response = await fetch("http://localhost:5000/api/form", {
+      const response = await fetch("https://form-backend-mu.vercel.app/api/form", {
         method: "POST",
         body: formDataObj,
       });
