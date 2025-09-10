@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="32" height="32">
+  <defs>
+    <linearGradient id="gmbGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4285F4;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#34A853;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background circle -->
+  <circle cx="50" cy="50" r="45" fill="url(#gmbGradient)" stroke="#fff" stroke-width="2"/>
+
+  <!-- GMB Letters -->
+  <text x="50" y="35" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="white">GMB</text>
+
+  <!-- Spande/Location pin -->
+  <path d="M50 40 L45 50 L50 48 L55 50 Z" fill="#EA4335"/>
+  <circle cx="50" cy="45" r="2" fill="#EA4335"/>
+
+  <!-- Business building -->
+  <rect x="42" y="52" width="16" height="8" fill="#FBBC05" stroke="#fff" stroke-width="1"/>
+  <rect x="44" y="54" width="3" height="4" fill="#fff"/>
+  <rect x="48" y="54" width="3" height="4" fill="#fff"/>
+  <rect x="52" y="54" width="3" height="4" fill="#fff"/>
+</svg>
