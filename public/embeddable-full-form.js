@@ -1,0 +1,965 @@
+// GBP Full Form Embeddable Script
+// Include this script on your website to display the complete GBP suspension checker form
+
+(function() {
+    'use strict';
+
+    // Configuration
+    const config = {
+        containerId: 'gbp-form-container', // ID of the container element
+        autoInitialize: true, // Automatically initialize when script loads
+        theme: 'default' // 'default', 'dark', 'light'
+    };
+
+    // Form CSS Styles
+    const formCSS = `
+        .gbp-full-form * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .gbp-full-form {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .gbp-full-form .form-container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .gbp-full-form .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .gbp-full-form .form-header h1 {
+            color: #2c3e50;
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+
+        .gbp-full-form .form-header p {
+            color: #666;
+            font-size: 1em;
+        }
+
+        .gbp-full-form .form-section {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border-left: 4px solid #4facfe;
+        }
+
+        .gbp-full-form .form-section legend {
+            font-weight: 700;
+            font-size: 1.4em;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            padding: 0 10px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .gbp-full-form .option-group {
+            margin-bottom: 20px;
+        }
+
+        .gbp-full-form .option-group b {
+            font-size: 16px;
+            margin-bottom: 10px;
+            display: block;
+            color: #2c3e50;
+        }
+
+        .gbp-full-form .option-group label {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .gbp-full-form .option-group input[type="radio"],
+        .gbp-full-form .option-group input[type="checkbox"] {
+            margin: 0;
+            accent-color: #4facfe;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .gbp-full-form .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .gbp-full-form .input-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #fff;
+        }
+
+        .gbp-full-form .input-group input:focus {
+            outline: none;
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+
+        .gbp-full-form .input-group label {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #fff;
+            padding: 0 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #4facfe;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            z-index: 1;
+        }
+
+        .gbp-full-form .input-group input:focus + label,
+        .gbp-full-form .input-group input:not(:placeholder-shown) + label {
+            top: -8px;
+            font-size: 11px;
+        }
+
+        .gbp-full-form .generate-report-btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 16px 35px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 15px 0;
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
+            width: 100%;
+        }
+
+        .gbp-full-form .generate-report-btn:hover:not(.disabled-btn) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(79, 172, 254, 0.4);
+        }
+
+        .gbp-full-form .generate-report-btn.disabled-btn {
+            background: linear-gradient(135deg, #adb5bd 0%, #6c757d 100%);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+            opacity: 0.6;
+        }
+
+        .gbp-full-form .report-display-section {
+            margin-top: 35px;
+            padding: 25px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .gbp-full-form .contact-fields {
+            margin: 25px 0;
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .gbp-full-form .contact-fields h3 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            font-size: 1.4em;
+            font-weight: 600;
+        }
+
+        .gbp-full-form .contact-fields p {
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+
+        .gbp-full-form .submit-btn {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .gbp-full-form .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        .gbp-full-form .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .gbp-full-form .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .gbp-full-form .disclaimer-section {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            border: 2px solid #ffc107;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+
+        .gbp-full-form .disclaimer-content {
+            padding: 20px;
+        }
+
+        .gbp-full-form .disclaimer-text {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #dee2e6;
+        }
+
+        .gbp-full-form .disclaimer-text p {
+            margin: 12px 0;
+            line-height: 1.6;
+            color: #495057;
+        }
+
+        .gbp-full-form .disclaimer-text strong {
+            color: #dc3545;
+        }
+
+        .gbp-full-form .disclaimer-checkbox {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid #dee2e6;
+        }
+
+        .gbp-full-form .disclaimer-checkbox label {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-weight: 600;
+            color: #495057;
+            cursor: pointer;
+            line-height: 1.5;
+        }
+
+        .gbp-full-form .disclaimer-checkbox input[type="checkbox"] {
+            margin-top: 2px;
+            width: 18px;
+            height: 18px;
+            accent-color: #28a745;
+            flex-shrink: 0;
+        }
+
+        .gbp-full-form .disabled-section {
+            opacity: 0.4;
+            pointer-events: none;
+            filter: grayscale(100%);
+        }
+
+        .gbp-full-form .conditional-question {
+            margin-top: 15px;
+            padding: 15px;
+            border-left: 4px solid #4CAF50;
+            background-color: #f9fdf9;
+            animation: fadeIn 0.5s ease-in-out;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .gbp-full-form @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .gbp-full-form .form-container {
+                padding: 20px;
+                margin: 10px;
+            }
+
+            .gbp-full-form .form-header h1 {
+                font-size: 1.8em;
+            }
+
+            .gbp-full-form .form-section {
+                padding: 15px;
+            }
+
+            .gbp-full-form .option-group b {
+                font-size: 14px;
+            }
+        }
+    `;
+
+    // Form HTML Content
+    const formHTML = `
+        <div class="form-container">
+            <div class="form-header">
+                <h1>GBP Suspension Checker</h1>
+                <p>Complete assessment to check your Google Business Profile status</p>
+            </div>
+
+            <form id="suspension-form">
+                <!-- Disclaimer Section -->
+                <div class="form-section disclaimer-section">
+                    <fieldset>
+                        <legend>⚠️ Important Notice</legend>
+                        <div class="disclaimer-content">
+                            <div class="disclaimer-text">
+                                <p><strong>This form is intended solely to assist users with collecting information related to Google My Business (GMB).</strong></p>
+                                <p><strong>We are not affiliated with Google or any of its services.</strong></p>
+                                <p><strong>The content submitted through this form is not reviewed or verified by Google.</strong></p>
+                                <p>Please ensure you have read and understood Google's official guidelines before proceeding.</p>
+                                <p>By submitting this form, you acknowledge that you are responsible for complying with Google's policies and that this tool is offered for informational purposes only.</p>
+                            </div>
+                            <div class="disclaimer-checkbox">
+                                <label>
+                                    <input type="checkbox" id="disclaimer-accept" required>
+                                    I have read and understood the above notice and agree to proceed
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <!-- Section 1: Business Type & Location -->
+                <div class="form-section" id="section-1">
+                    <fieldset>
+                        <legend>1. Business Type & Location</legend>
+                        <div class="option-group">
+                            <b>Q1. What type of business do you operate?</b>
+                            <label><input type="radio" name="business-type" value="Brick-and-mortar store" required> Brick-and-mortar store</label>
+                            <label><input type="radio" name="business-type" value="Home-based business"> Home-based business</label>
+                            <label><input type="radio" name="business-type" value="Mobile or service-area business"> Mobile or service-area business</label>
+                            <label><input type="radio" name="business-type" value="Online-only business"> Online-only business</label>
+                        </div>
+                        <div class="option-group">
+                            <b>Q2. Do you operate from a:</b>
+                            <label><input type="checkbox" name="location-type-1"> Private office</label>
+                            <label><input type="checkbox" name="location-type-2"> Shared workspace</label>
+                            <label><input type="checkbox" name="location-type-3"> Virtual office</label>
+                            <label><input type="checkbox" name="location-type-4"> P.O. Box or mailbox center</label>
+                            <label><input type="checkbox" name="location-type-5"> Residential address</label>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <!-- Section 2: Recent Changes -->
+                <div class="form-section" id="section-2">
+                    <fieldset>
+                        <legend>2. Recent Changes</legend>
+                        <div class="option-group">
+                            <b>Q3. Have you made any changes to your GBP recently? (Select all that apply)</b>
+                            <label><input type="checkbox" name="recently-changes"> Business name</label>
+                            <label><input type="checkbox" name="recently-changes-1"> Business category</label>
+                            <label><input type="checkbox" name="recently-changes-2"> Address</label>
+                            <label><input type="checkbox" name="recently-changes-3"> Phone number</label>
+                            <label><input type="checkbox" name="recently-changes-4"> Website</label>
+                            <label><input type="checkbox" name="recently-changes-5"> Added new photos or videos</label>
+                            <label><input type="checkbox" name="recently-changes-6"> No changes made recently</label>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <!-- Section 3: Contact Information Details -->
+                <div class="form-section" id="section-3">
+                    <fieldset>
+                        <legend>3. Contact Information Details</legend>
+                        <div class="option-group">
+                            <b>Q4. Are you using a phone number or address that's shared with another business?</b>
+                            <label><input type="radio" name="shared-contact" value="Yes"> Yes</label>
+                            <label><input type="radio" name="shared-contact" value="No"> No</label>
+                            <label><input type="radio" name="shared-contact" value="Not sure"> Not sure</label>
+                        </div>
+                        <div class="option-group">
+                            <b>Q5. Is your listed phone number a mobile or landline?</b>
+                            <label><input type="radio" name="phone-type" value="Mobile"> Mobile</label>
+                            <label><input type="radio" name="phone-type" value="Landline (business)"> Landline (business)</label>
+                            <label><input type="radio" name="phone-type" value="VoIP or call-forwarding service"> VoIP or call-forwarding service</label>
+                            <label><input type="radio" name="phone-type" value="Not sure"> Not sure</label>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <!-- Section 4: Verification & Access -->
+                <div class="form-section" id="section-4">
+                    <fieldset>
+                        <legend>4. Verification & Access</legend>
+                        <div class="option-group">
+                            <b>Q6. How was your GBP verified?</b>
+                            <label><input type="radio" name="verification" value="Postcard"> Postcard</label>
+                            <label><input type="radio" name="verification" value="Phone"> Phone</label>
+                            <label><input type="radio" name="verification" value="Video verification"> Video verification</label>
+                            <label><input type="radio" name="verification" value="Third-party agency"> Third-party agency</label>
+                            <label><input type="radio" name="verification" value="Dont remember"> Don't remember</label>
+                        </div>
+                        <div class="option-group">
+                            <b>Q7. Do you have access to the Google Account that manages the GBP?</b>
+                            <label><input type="radio" name="account-access" value="Yes"> Yes</label>
+                            <label><input type="radio" name="account-access" value="No"> No</label>
+                            <label><input type="radio" name="account-access" value="Its managed by an agency or someone else"> It's managed by an agency or someone else</label>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <!-- Section 5: Compliance & Authenticity -->
+                <div class="form-section" id="section-5">
+                    <fieldset>
+                        <legend>5. Compliance & Authenticity</legend>
+                        <div class="option-group">
+                            <b>Q8. Does your business have clear signage at the location?</b>
+                            <label><input type="radio" name="signage" value="Yes, permanently visible signage"> Yes, permanently visible signage</label>
+                            <label><input type="radio" name="signage" value="No signage yet"> No signage yet</label>
+                            <label><input type="radio" name="signage" value="Not applicable (service-area business)"> Not applicable (service-area business)</label>
+                        </div>
+                        <div class="option-group" id="staffed-questions" style="display: none;">
+                            <b>Q9. Is your business staffed and open during listed business hours?</b>
+                            <label><input type="radio" name="staffed" value="Yes"> Yes</label>
+                            <label><input type="radio" name="staffed" value="No"> No</label>
+                            <label><input type="radio" name="staffed" value="Sometimes / on-demand"> Sometimes / on-demand</label>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <!-- Section 6: Photos, Content, and Reviews -->
+                <div class="form-section" id="section-6">
+                    <fieldset>
+                        <legend>6. Photos, Content, and Reviews</legend>
+                        <div class="option-group">
+                            <b>Q10. Have you uploaded stock images, logos with text overlays, or generic promotional content?</b>
+                            <label><input type="radio" name="stock-images" value="Yes"> Yes</label>
+                            <label><input type="radio" name="stock-images" value="No"> No</label>
+                            <label><input type="radio" name="stock-images" value="Not sure"> Not sure</label>
+                        </div>
+                        <div class="option-group">
+                            <b>Q11. Have you received multiple suspicious or fake reviews recently?</b>
+                            <label><input type="radio" name="fake-reviews" value="Yes"> Yes</label>
+                            <label><input type="radio" name="fake-reviews" value="No"> No</label>
+                            <label><input type="radio" name="fake-reviews" value="Not sure"> Not sure</label>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <!-- Section 7: Google Communication -->
+                <div class="form-section" id="section-7">
+                    <fieldset>
+                        <legend>7. Google Communication</legend>
+                        <div class="option-group">
+                            <b>Q12. Did you receive any emails from Google before or after suspension?</b>
+                            <label><input type="checkbox" name="google-emails-1"> Yes, warning before suspension</label>
+                            <label><input type="checkbox" name="google-emails-2"> Yes, notice after suspension</label>
+                            <label><input type="checkbox" name="google-emails-3"> No emails received</label>
+                            <label><input type="checkbox" name="google-emails-4"> Not sure</label>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <!-- Generate Report Button -->
+                <button type="button" class="generate-report-btn" id="generate-report-btn" disabled>
+                    📊 Generate Report
+                </button>
+
+                <!-- Report Display -->
+                <div id="report-section" style="display: none;">
+                    <div class="report-display-section">
+                        <div id="report-content"></div>
+
+                        <!-- Contact Information Section -->
+                        <div class="contact-fields">
+                            <h3>📧 Your Contact Information</h3>
+                            <p>Please provide your details to receive the detailed report via email.</p>
+
+                            <div class="input-group">
+                                <input type="text" id="business-name" name="business_name" placeholder=" " required>
+                                <label for="business-name">Business Name</label>
+                            </div>
+
+                            <div class="input-group">
+                                <input type="email" id="user-email" name="email" placeholder=" " required>
+                                <label for="user-email">Email Address</label>
+                            </div>
+
+                            <div class="input-group">
+                                <input type="tel" id="user-phone" name="phone" placeholder=" " required>
+                                <label for="user-phone">Phone Number</label>
+                            </div>
+
+                            <div class="input-group">
+                                <input type="url" id="gmb-url" name="gmb_url" placeholder="https://maps.google.com/...">
+                                <label for="gmb-url">GMB URL (Optional)</label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="submit-btn">📤 Submit Report</button>
+                    </div>
+                </div>
+
+                <div id="success-message" class="success-message">
+                    ✅ Success! Your report has been sent to your email.
+                </div>
+
+                <div id="error-message" class="error-message">
+                    ❌ Error submitting form. Please try again.
+                </div>
+            </form>
+        </div>
+    `;
+
+    // Initialize the form
+    function initializeForm() {
+        // Find or create container
+        let container = document.getElementById(config.containerId);
+        if (!container) {
+            container = document.createElement('div');
+            container.id = config.containerId;
+            container.className = 'gbp-full-form';
+            document.body.appendChild(container);
+        } else {
+            container.className = 'gbp-full-form';
+        }
+
+        // Inject CSS
+        const styleSheet = document.createElement('style');
+        styleSheet.textContent = formCSS;
+        document.head.appendChild(styleSheet);
+
+        // Inject HTML
+        container.innerHTML = formHTML;
+
+        // Initialize form functionality
+        initializeFormLogic();
+    }
+
+    // Form Logic Functions
+    function initializeFormLogic() {
+        // Auto-generate report function
+        function autoGenerateReport() {
+            if (!disclaimerCheckbox.checked) {
+                return;
+            }
+
+            const hasAnsweredQuestions = checkIfQuestionsAnswered();
+            if (hasAnsweredQuestions && document.getElementById('report-section').style.display === 'none') {
+                generateReportNow();
+            }
+        }
+
+        // Generate report function
+        function generateReportNow() {
+            let riskScore = 0;
+            let riskFactors = [];
+            let recommendations = [];
+
+            // Business Type Assessment
+            const businessType = document.querySelector('input[name="business-type"]:checked');
+            if (businessType) {
+                switch (businessType.value) {
+                    case 'Brick-and-mortar store':
+                        riskScore += 5;
+                        break;
+                    case 'Home-based business':
+                        riskScore += 12;
+                        riskFactors.push('Home-based business may have higher scrutiny');
+                        break;
+                    case 'Mobile or service-area business':
+                        riskScore += 10;
+                        break;
+                    case 'Online-only business':
+                        riskScore += 18;
+                        riskFactors.push('Online-only businesses face stricter verification');
+                        break;
+                }
+            }
+
+            // Location Type Assessment
+            const locationCheckboxes = document.querySelectorAll('input[name^="location-type-"]:checked');
+            if (locationCheckboxes.length > 0) {
+                locationCheckboxes.forEach(checkbox => {
+                    const locationType = checkbox.name.replace('location-type-', '');
+                    switch (locationType) {
+                        case '1':
+                            riskScore += 2;
+                            break;
+                        case '2':
+                            riskScore += 6;
+                            riskFactors.push('Shared workspace may require additional verification');
+                            break;
+                        case '3':
+                            riskScore += 8;
+                            riskFactors.push('Virtual offices need strong documentation');
+                            break;
+                        case '4':
+                            riskScore += 12;
+                            riskFactors.push('P.O. Box addresses often flagged by Google');
+                            recommendations.push('Consider using a physical business address');
+                            break;
+                        case '5':
+                            riskScore += 15;
+                            riskFactors.push('Residential addresses have highest suspension risk');
+                            recommendations.push('Use commercial address if possible');
+                            break;
+                    }
+                });
+            }
+
+            // Recent Changes Assessment
+            const recentChanges = document.querySelectorAll('input[name^="recently-changes"]:checked');
+            if (recentChanges.length > 0) {
+                recentChanges.forEach(change => {
+                    const changeType = change.name;
+                    if (changeType === 'recently-changes') {
+                        riskScore += 4;
+                        riskFactors.push('Recent name changes may trigger verification');
+                    } else if (changeType === 'recently-changes-2') {
+                        riskScore += 6;
+                        riskFactors.push('Address changes require re-verification');
+                    } else if (changeType === 'recently-changes-3') {
+                        riskScore += 3;
+                        riskFactors.push('Phone changes may need verification');
+                    }
+                });
+            }
+
+            // Contact Information Assessment
+            const sharedContact = document.querySelector('input[name="shared-contact"]:checked');
+            if (sharedContact && sharedContact.value === 'Yes') {
+                riskScore += 12;
+                riskFactors.push('Shared contact information is a major suspension risk');
+                recommendations.push('Use unique phone number and address');
+            }
+
+            const phoneType = document.querySelector('input[name="phone-type"]:checked');
+            if (phoneType) {
+                if (phoneType.value === 'VoIP or call-forwarding service') {
+                    riskScore += 10;
+                    riskFactors.push('VoIP numbers may not be accepted by Google');
+                    recommendations.push('Use a Google-verified phone number');
+                }
+            }
+
+            // Verification Method Assessment
+            const verification = document.querySelector('input[name="verification"]:checked');
+            if (verification) {
+                if (verification.value === 'Third-party agency') {
+                    riskScore += 8;
+                    riskFactors.push('Third-party verification may not be recognized');
+                } else if (verification.value === 'Dont remember') {
+                    riskScore += 6;
+                    riskFactors.push('Unverified listings are at higher risk');
+                }
+            }
+
+            // Account Access Assessment
+            const accountAccess = document.querySelector('input[name="account-access"]:checked');
+            if (accountAccess && accountAccess.value === 'Its managed by an agency or someone else') {
+                riskScore += 8;
+                riskFactors.push('Agency-managed accounts need proper access');
+                recommendations.push('Ensure you have admin access to your GBP');
+            }
+
+            // Signage Assessment
+            const signage = document.querySelector('input[name="signage"]:checked');
+            if (signage) {
+                if (signage.value === 'No signage yet') {
+                    riskScore += 8;
+                    riskFactors.push('Missing signage is a common suspension reason');
+                    recommendations.push('Install clear business signage');
+                } else if (signage.value === 'Not applicable (service-area business)') {
+                    riskScore += 5;
+                    riskFactors.push('Service businesses need alternative verification');
+                }
+            }
+
+            // Content Quality Assessment
+            const stockImages = document.querySelector('input[name="stock-images"]:checked');
+            if (stockImages && stockImages.value === 'Yes') {
+                riskScore += 8;
+                riskFactors.push('Stock images may violate Google\'s content policies');
+                recommendations.push('Use original, high-quality photos');
+            }
+
+            const fakeReviews = document.querySelector('input[name="fake-reviews"]:checked');
+            if (fakeReviews && fakeReviews.value === 'Yes') {
+                riskScore += 15;
+                riskFactors.push('Fake reviews can lead to immediate suspension');
+                recommendations.push('Remove fake reviews and encourage genuine ones');
+            }
+
+            // Google Communication Assessment
+            const googleEmails = document.querySelectorAll('input[name^="google-emails-"]:checked');
+            if (googleEmails.length > 0) {
+                googleEmails.forEach(email => {
+                    if (email.name === 'google-emails-1') {
+                        riskScore += 3;
+                        riskFactors.push('Previous warnings increase suspension risk');
+                        recommendations.push('Address all Google warnings immediately');
+                    }
+                });
+            }
+
+            // Calculate final risk level
+            const riskLevel = riskScore < 20 ? { level: 'Low', class: 'risk-low', color: '#28a745' } :
+                            riskScore < 40 ? { level: 'Medium', class: 'risk-medium', color: '#ffc107' } :
+                            riskScore < 60 ? { level: 'High', class: 'risk-high', color: '#dc3545' } :
+                            { level: 'Very High', class: 'risk-critical', color: '#dc3545' };
+
+            // Generate report HTML
+            const reportHTML = `
+                <h2 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">📊 Google GMB Suspension Risk Assessment</h2>
+                <div style="text-align: center; margin: 20px 0;">
+                    <div style="width: 150px; height: 150px; border-radius: 50%; background: ${riskLevel.color}; display: inline-flex; align-items: center; justify-content: center; color: white; font-size: 24px; font-weight: bold; margin: 0 auto; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+                        ${Math.min(riskScore, 100)}%
+                    </div>
+                    <div style="margin-top: 10px; font-size: 18px; font-weight: bold;">Suspension Risk Score</div>
+                    <div style="margin-top: 5px; color: ${riskLevel.color}; font-weight: bold;">${riskLevel.level} Risk</div>
+                </div>
+
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                    <h3 style="color: #34495e; margin-bottom: 15px;">🎯 Risk Assessment Summary</h3>
+                    <p><strong>Business Type:</strong> ${businessType ? businessType.value : 'Not specified'}</p>
+                    <p><strong>Primary Risk Factors:</strong> ${riskFactors.length > 0 ? riskFactors.slice(0, 3).join(', ') : 'None identified'}</p>
+                    <p><strong>Overall Status:</strong> <span style="color: ${riskLevel.color}; font-weight: bold;">${riskLevel.level} Suspension Risk</span></p>
+                </div>
+
+                ${riskFactors.length > 0 ? `
+                <div style="background: #fff3cd; border: 1px solid #ffeaa7; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                    <h3 style="color: #856404; margin-bottom: 15px;">⚠️ Key Risk Factors Identified</h3>
+                    <ul style="color: #856404;">
+                        ${riskFactors.map(factor => `<li style="margin: 5px 0;">${factor}</li>`).join('')}
+                    </ul>
+                </div>
+                ` : ''}
+
+                ${recommendations.length > 0 ? `
+                <div style="background: #d4edda; border: 1px solid #c3e6cb; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                    <h3 style="color: #155724; margin-bottom: 15px;">💡 Google Compliance Recommendations</h3>
+                    <ul style="color: #155724;">
+                        ${recommendations.map(rec => `<li style="margin: 5px 0;">${rec}</li>`).join('')}
+                        <li>Regularly monitor your GBP listing</li>
+                        <li>Keep business information accurate and up-to-date</li>
+                        <li>Respond to Google notifications promptly</li>
+                        <li>Maintain high-quality, original content</li>
+                    </ul>
+                </div>
+                ` : `
+                <div style="background: #d4edda; border: 1px solid #c3e6cb; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                    <h3 style="color: #155724; margin-bottom: 15px;">✅ Good Standing</h3>
+                    <p style="color: #155724;">Your business appears to be in good standing with Google's guidelines. Continue maintaining accurate information and high-quality content.</p>
+                </div>
+                `}
+
+                <div style="background: #e7f3ff; border: 1px solid #b8daff; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                    <h3 style="color: #004085; margin-bottom: 15px;">📋 Next Steps</h3>
+                    <ol style="color: #004085;">
+                        <li>Review and address any risk factors identified above</li>
+                        <li>Verify all business information is accurate in GBP</li>
+                        <li>Ensure you have proper documentation for your business</li>
+                        <li>Monitor your listing regularly for any changes</li>
+                        <li>Contact Google support if you receive any notifications</li>
+                    </ol>
+                </div>
+            `;
+
+            document.getElementById('report-content').innerHTML = reportHTML;
+            document.getElementById('report-section').style.display = 'block';
+            document.getElementById('generate-report-btn').style.display = 'none';
+        }
+
+        // Check if questions are answered
+        function checkIfQuestionsAnswered() {
+            const businessType = document.querySelector('input[name="business-type"]:checked');
+            if (!businessType) return false;
+
+            const locationTypes = document.querySelectorAll('input[name^="location-type-"]:checked');
+            if (locationTypes.length === 0) return false;
+
+            const recentChanges = document.querySelectorAll('input[name^="recently-changes"]:checked');
+            if (recentChanges.length === 0) return false;
+
+            const sharedContact = document.querySelector('input[name="shared-contact"]:checked');
+            if (!sharedContact) return false;
+
+            const phoneType = document.querySelector('input[name="phone-type"]:checked');
+            if (!phoneType) return false;
+
+            const verification = document.querySelector('input[name="verification"]:checked');
+            if (!verification) return false;
+
+            const accountAccess = document.querySelector('input[name="account-access"]:checked');
+            if (!accountAccess) return false;
+
+            const signage = document.querySelector('input[name="signage"]:checked');
+            if (!signage) return false;
+
+            const stockImages = document.querySelector('input[name="stock-images"]:checked');
+            if (!stockImages) return false;
+
+            const fakeReviews = document.querySelector('input[name="fake-reviews"]:checked');
+            if (!fakeReviews) return false;
+
+            const googleEmails = document.querySelectorAll('input[name^="google-emails-"]:checked');
+            if (googleEmails.length === 0) return false;
+
+            return true;
+        }
+
+        // Disclaimer handling
+        const disclaimerCheckbox = document.getElementById('disclaimer-accept');
+        const generateBtn = document.getElementById('generate-report-btn');
+        const sections = document.querySelectorAll('.form-section:not(.disclaimer-section)');
+
+        if (disclaimerCheckbox && generateBtn) {
+            disclaimerCheckbox.addEventListener('change', function() {
+                if (this.checked) {
+                    generateBtn.disabled = false;
+                    sections.forEach(section => section.classList.remove('disabled-section'));
+                } else {
+                    generateBtn.disabled = true;
+                    sections.forEach(section => section.classList.add('disabled-section'));
+                }
+            });
+
+            // Signage change handling
+            const signageRadios = document.querySelectorAll('input[name="signage"]');
+            const staffedQuestions = document.getElementById('staffed-questions');
+
+            if (staffedQuestions) {
+                signageRadios.forEach(radio => {
+                    radio.addEventListener('change', function() {
+                        if (this.value === 'Yes, permanently visible signage' || this.value === 'No signage yet') {
+                            staffedQuestions.style.display = 'block';
+                        } else {
+                            staffedQuestions.style.display = 'none';
+                        }
+                        setTimeout(autoGenerateReport, 500);
+                    });
+                });
+            }
+
+            // Add change listeners
+            const allInputs = document.querySelectorAll('input[type="radio"], input[type="checkbox"]');
+            allInputs.forEach(input => {
+                input.addEventListener('change', function() {
+                    setTimeout(autoGenerateReport, 500);
+                });
+            });
+
+            // Generate report button
+            generateBtn.addEventListener('click', function() {
+                if (!disclaimerCheckbox.checked) {
+                    alert('Please accept the disclaimer first.');
+                    return;
+                }
+
+                const hasAnsweredQuestions = checkIfQuestionsAnswered();
+                if (!hasAnsweredQuestions) {
+                    alert('कृपया कम से कम कुछ प्रश्नों का उत्तर दें! (Please answer at least some questions!)');
+                    return;
+                }
+
+                generateReportNow();
+            });
+        }
+
+        // Form submission
+        const suspensionForm = document.getElementById('suspension-form');
+        if (suspensionForm) {
+            suspensionForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                const formData = new FormData(this);
+                formData.append('apiKey', 'aiFORM_29Vv8Kkd3HrT3zfQbNhpF85mV');
+
+                try {
+                    const response = await fetch('https://form-backend-mu.vercel.app/api/form', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        document.getElementById('success-message').style.display = 'block';
+                        document.getElementById('error-message').style.display = 'none';
+                        this.reset();
+                    } else {
+                        throw new Error(result.error || 'Failed to submit');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    document.getElementById('success-message').style.display = 'none';
+                    document.getElementById('error-message').style.display = 'block';
+                }
+            });
+        }
+    }
+
+    // Auto-initialize if configured
+    if (config.autoInitialize) {
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeForm);
+        } else {
+            initializeForm();
+        }
+    }
+
+    // Expose public API
+    window.GBPFullForm = {
+        initialize: initializeForm,
+        config: config
+    };
+
+    console.log('GBP Full Form script loaded successfully!');
+})();

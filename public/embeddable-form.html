@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GBP Suspension Checker Form</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .form-container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-header h1 {
+            color: #2c3e50;
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+
+        .form-header p {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .contact-fields {
+            margin-bottom: 30px;
+        }
+
+        .contact-fields h3 {
+            color: #2c3e50;
+            font-size: 1.4em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .contact-fields p {
+            color: #666;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #fff;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+
+        .input-group label {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #fff;
+            padding: 0 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #4facfe;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            z-index: 1;
+        }
+
+        .input-group input:focus + label,
+        .input-group input:not(:placeholder-shown) + label {
+            top: -8px;
+            font-size: 11px;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(79, 172, 254, 0.4);
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <div class="form-header">
+            <h1>GBP Suspension Checker</h1>
+            <p>Check your Google Business Profile status</p>
+        </div>
+
+        <form id="contact-form">
+            <div class="contact-fields">
+                <h3>📧 Your Contact Information</h3>
+                <p>Please provide your details to receive the detailed report via email.</p>
+
+                <div class="input-group">
+                    <input
+                        type="text"
+                        id="business-name"
+                        name="business_name"
+                        placeholder=" "
+                        required
+                    />
+                    <label for="business-name">Business Name</label>
+                </div>
+
+                <div class="input-group">
+                    <input
+                        type="email"
+                        id="user-email"
+                        name="email"
+                        placeholder=" "
+                        required
+                    />
+                    <label for="user-email">Email Address</label>
+                </div>
+
+                <div class="input-group">
+                    <input
+                        type="tel"
+                        id="user-phone"
+                        name="phone"
+                        placeholder=" "
+                        required
+                    />
+                    <label for="user-phone">Phone Number</label>
+                </div>
+
+                <div class="input-group">
+                    <input
+                        type="url"
+                        id="gmb-url"
+                        name="gmb_url"
+                        placeholder="https://maps.google.com/..."
+                    />
+                    <label for="gmb-url">GMB URL (Optional)</label>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">📤 Submit & Get Report</button>
+        </form>
+
+        <div id="success-message" class="success-message">
+            ✅ Success! Your report has been sent to your email.
+        </div>
+
+        <div id="error-message" class="error-message">
+            ❌ Error submitting form. Please try again.
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('contact-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            formData.append('apiKey', 'aiFORM_29Vv8Kkd3HrT3zfQbNhpF85mV');
+
+            try {
+                const response = await fetch('https://form-backend-mu.vercel.app/api/form', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    document.getElementById('success-message').style.display = 'block';
+                    document.getElementById('error-message').style.display = 'none';
+                    this.reset();
+                } else {
+                    throw new Error(result.error || 'Failed to submit');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('success-message').style.display = 'none';
+                document.getElementById('error-message').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
